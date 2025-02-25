@@ -1,5 +1,5 @@
 from fastapi import FastAPI, status, HTTPException, APIRouter
-from schemas import CreateBook
+from .schemas import CreateBook
 
 router = APIRouter(tags=["Books"])
 
