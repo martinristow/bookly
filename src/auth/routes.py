@@ -6,9 +6,10 @@ from src.db.main import get_session
 from .utils import create_access_token, decode_token, verify_password
 from datetime import timedelta, datetime
 from fastapi.responses import JSONResponse
-from .dependencies import RefreshTokenBearer, get_current_user
+from .dependencies import RefreshTokenBearer, get_current_user, RoleChecker
 
 user_service = UserService()
+role_checker = RoleChecker(['admin', 'user'])
 
 router = APIRouter(tags=["auth"])
 
@@ -43,12 +44,13 @@ async def login_users(login_data: UserLoginModel, session: AsyncSession = Depend
             access_token = create_access_token(
                 user_data={
                     "email": user.email,
-                    "user_uid": str(user.uid)
+                    "user_uid": str(user.uid),
+                    "role": user.role
                 }
             )
 
             refresh_token = create_access_token(
-                user_data={"email": user.email, "user_uid": str(user.uid)},
+                user_data={"email": user.email, "user_uid": str(user.uid), "role": user.role},
                 refresh=True,
                 expiry=timedelta(days=REFRESH_TOKEN_EXPIRY),
             )
@@ -58,7 +60,7 @@ async def login_users(login_data: UserLoginModel, session: AsyncSession = Depend
                     "message": "Login successful",
                     "access_token": access_token,
                     "refresh_token": refresh_token,
-                    "user": {"email": user.email, "uid": str(user.uid)},
+                    "user": {"email": user.email, "uid": str(user.uid), "role": user.role},
                 }
             )
 
@@ -80,5 +82,5 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
 
 
 @router.get("/me")
-async def get_current_user(user=Depends(get_current_user)):
+async def get_current_user(user=Depends(get_current_user), _: bool = Depends(role_checker)):
     return user
