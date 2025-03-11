@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field, EmailStr
 from datetime import datetime
+from typing import List
+from src.books.schemas import Book
 import uuid
 
 
@@ -21,6 +23,7 @@ class UserResponseModel(UserModel):
     password_hash: str = Field(exclude=True)
     created_at: datetime
     update_at: datetime
+    books: List[Book]
 
 
 class UserLoginModel(BaseModel):
