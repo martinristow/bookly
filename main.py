@@ -3,6 +3,7 @@ from src.books import routes as book_router
 from contextlib import asynccontextmanager
 from src.db.main import init_db
 from src.auth import routes as auth_router
+from src.reviews import routes as review_router
 
 
 @asynccontextmanager
@@ -23,6 +24,7 @@ app = FastAPI(
 
 app.include_router(book_router.router, prefix="/books")
 app.include_router(auth_router.router, prefix="/auth")
+app.include_router(review_router.router, prefix="/reviews")
 
 
 #
