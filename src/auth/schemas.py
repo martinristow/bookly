@@ -23,6 +23,9 @@ class UserResponseModel(UserModel):
     password_hash: str = Field(exclude=True)
     created_at: datetime
     update_at: datetime
+
+
+class UserBooksModel(UserResponseModel):
     books: List[Book]
 
 
