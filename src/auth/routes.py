@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from .schemas import UserCreateModel, UserResponseModel, UserLoginModel
+from .schemas import UserCreateModel, UserResponseModel, UserLoginModel, UserBooksModel
 from .service import UserService
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.db.main import get_session
@@ -81,6 +81,6 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired token")
 
 
-@router.get("/me", response_model=UserResponseModel)
+@router.get("/me", response_model=UserBooksModel)
 async def get_current_user(user=Depends(get_current_user), _: bool = Depends(role_checker)):
     return user
